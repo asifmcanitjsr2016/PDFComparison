@@ -1,0 +1,24 @@
+[23/Sep/2020 13:45:47] INFO [compare_app.views:12] Test log in django!
+[23/Sep/2020 13:54:07] INFO [compare_app.views:13] Test log in django!
+[23/Sep/2020 13:58:52] INFO [compare_app.views:13] Test log in django!
+[23/Sep/2020 13:59:04] ERROR [compare_app.views:40] cannot open D:\DocSyncComparisonAPIv1\compare_project\pdf\Temp_03.pdf: No such file or directory
+[23/Sep/2020 15:39:31] INFO [compare_app.views:13] Test log in django!
+[23/Sep/2020 15:39:47] ERROR [compare_app.views:40] cannot open D:\home\site\wwwroot\pdf\Temp_01.pdf: No such file or directory
+[23/Sep/2020 15:40:36] INFO [compare_app.views:13] Test log in django!
+[23/Sep/2020 17:46:04] INFO [compare_app.views:13] Test log in django!
+[24/Sep/2020 12:00:54] INFO [compare_app.views:13] Test log in django!
+[24/Sep/2020 12:01:25] INFO [compare_app.views:13] Test log in django!
+[24/Sep/2020 12:06:54] INFO [compare_app.views:13] Test log in django!
+[24/Sep/2020 13:00:06] INFO [compare_app.views:13] Test log in django!
+[24/Sep/2020 13:04:02] INFO [compare_app.views:13] Test log in django!
+[24/Sep/2020 13:20:07] INFO [compare_app.views:13] Test log in django!
+[28/Sep/2020 12:14:10] INFO [compare_app.views:48] loading homepag
+[28/Sep/2020 12:14:10] INFO [compare_app.views:48] loading homepag
+[30/Sep/2020 09:31:33] INFO [compare_app.views:48] loading homepage
+[30/Sep/2020 09:31:33] INFO [compare_app.views:48] loading homepage
+[30/Sep/2020 09:32:41] INFO [compare_app.views:13] Test log in django!
+[30/Sep/2020 11:42:49] INFO [compare_app.views:48] loading homepage
+[30/Sep/2020 11:42:50] INFO [compare_app.views:48] loading homepage
+[30/Sep/2020 11:42:58] INFO [compare_app.views:13] Test log in django!
+[01/Oct/2020 13:10:47] INFO [compare_app.views:48] loading homepage
+[01/Oct/2020 13:10:47] INFO [compare_app.views:48] loading homepage

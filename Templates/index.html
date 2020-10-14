@@ -1,0 +1,267 @@
+{% load static %}
+<!DOCTYPE html>
+   <head>
+      <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="https://statics.teams.microsoft.com/sdk/v1.5.2/js/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"></script>    
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round" rel="stylesheet">
+    <title>Compare Two Pdf</title>
+   </head>
+<style>
+    * {
+        font-family: "Times New Roman", Times, serif;
+    }
+    span {
+    display: inline-block;
+    width: 180px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+    .button {
+        background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+        border: 1px solid #076bd2;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 1.3;
+        padding: 8px 25px;
+        text-align: center;
+        text-shadow: 1px 1px 1px #076bd2;
+        letter-spacing: normal;
+    }
+
+    #overlay {
+        position: fixed;
+        top: 0;
+        display: none;
+        left: 0;
+        z-index: 99999999;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+    }
+
+    .cv-spinner {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner-o {
+        width: 140px;
+        height: 140px;
+        /*border: 4px #4CAF50 solid;
+        border-top: 4px #4CAF50 solid;
+        border-radius: 50%;
+        animation: sp-anime 0.8s infinite linear;*/
+        background-image: url("{% static 'Images/spinner.gif' %}");
+    }
+
+    .center {
+        padding: 5px;
+        text-align: center;
+    }
+
+    .centerButton {
+        padding: 30px;
+        text-align: center;
+    }
+
+    .sidebyside {
+        display: inline-block;
+        width: 45%;
+        min-height: 40px;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    #headline {
+        font-size: 40px;
+        font-weight: 300;
+    }
+
+    #headline2 {
+        font-size: 18px;
+        font-weight: 100;
+    }
+
+    #results {
+        border: 1px solid #ddd;
+        text-align: center;
+        min-height: 225px;
+    }
+
+    #start_button {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        padding: 38px;
+    }
+</style>
+<h1 class="center" id="headline">
+    Compare PDFs
+</h1>
+<h4 class="center" id="headline2">
+    Find the difference between two PDF files!
+    <br />
+    Select two PDFs and the difference will show up below.
+</h4>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3">
+            <div id="results">
+                <button id="start_button" onclick="pdfOneClick()">
+                    <img id="start_img" src="{% static 'Images/pdf.png' %}" alt="PDF1" style="width:100px;height:100px">
+                </button>
+                <span id="1stPdfName">No file chosen</span>
+                <input type="file" id="file1" accept="application/pdf" style="display:none">
+                <div class="progress" id="prog1" style="display: none;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;"></div>
+                  </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div id="results">
+                <button id="start_button" onclick="pdfTwoClick()">
+                    <img id="start_img" src="{% static 'Images/pdf.png' %}" alt="PDF2" style="width:100px;height:100px">
+                </button>
+                <span id="2ndPdfName">No file chosen</span>
+                <input type="file" id="file2" accept="application/pdf" style="display:none">
+                <div class="progress" id="prog2" style="display: none;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%;"></div>
+                  </div>
+            </div>
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <div class="centerButton">
+                <button id="copy_button" class="button" onclick="comparePDF()">
+                    Compare
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+    <div class="row">
+        <embed id ="outputPdf" type="application/pdf" style="display:none;width:100%" height="600">
+    </div>
+</div>
+<div id="overlay">
+    <div class="cv-spinner">
+        <span class="spinner-o"></span>
+
+    </div>
+</div>
+<script>
+    function comparePDF() {
+        var pdf1 = $('#1stPdfName').text();
+        var pdf2 = $('#2ndPdfName').text();
+        if (pdf1 === "No file chosen" || pdf1 === "Uploading..." || pdf2 === "No file chosen" || pdf2 === "Uploading...") {
+           alert("Please choose pdf first!");
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                dataType: 'text',
+                url: '/CompareTwoPDF',
+                data: "pdf_old=" + pdf1 + "&pdf_new=" + pdf2 + "&pdf_output=" + "outputPdf_" + pdf1 + "&source=Web",
+                success: function (Data) {
+                    if (Data) {
+                        var embed1 = document.getElementById('outputPdf');
+                        var path = "{% static 'pdf/' %}{{'"+Data+"'}}";
+                        embed1.src = path.replace(/\"/g,"");
+                        $("#outputPdf").css("display", "block");
+                        //alert(Data)
+                        //document.getElementById("1stPdfName").innerHTML = Data;
+                    }                    
+                },
+                beforeSend: function () {                    
+                    $("#overlay").fadeIn(300);
+                    //$("#showloading").css("display", "block");
+                },
+                complete: function () {
+
+                    //$("#showloading").css("display", "none");
+                    $("#overlay").fadeOut(300);
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown)
+                }
+            });
+        }
+    }
+    function pdfOneClick() {
+        $("#file1").trigger('click');
+        
+    }
+
+    function pdfTwoClick() {
+        $("#file2").trigger('click');
+
+    }
+
+    $('input[type=file]').change(function (event) {
+        var allowedTypes = ['application/pdf'];
+        var file = this.files[0];
+        var fileType = file.type;
+        if(!file || !allowedTypes.includes(fileType)){
+            alert('Please select only PDF file');
+            return;
+        }
+        var filename = event.target.files[0].name;
+        var fileId = event.target.id;            
+
+  return $.ajax({
+    url: '/UploadPDF', // your route to process the file
+    type: 'POST', //
+    data: file,
+    processData: false,
+    contentType: 'application/octet-stream', // set Content-Type header
+    headers: { 'filename': filename },
+    success: function(respnse) {
+      // do something
+    },
+    beforeSend: function () {     
+        if(fileId === "file1"){
+            $('#1stPdfName').text("Uploading...");
+            $("#prog1").show();            
+        }
+        else{
+            $('#2ndPdfName').text("Uploading...");
+            $("#prog2").show();            
+        }
+    },
+    complete:function(){
+        if (fileId === 'file1') {
+            $("#prog1").hide();
+            $('#1stPdfName').text(filename);
+        }
+        else if (fileId === 'file2') {
+            $("#prog2").hide();
+            $('#2ndPdfName').text(filename);
+        }
+    },
+
+    error: function(xhr, textStatus, errorThrown) {
+      // do something else
+    }
+  });
+    });
+microsoftTeams.initialize();
+</script>
