@@ -1,2 +1,2 @@
 # PDFComparison
-Compare two pdf files
+choose two pdf files and compare it to show differences.
